@@ -26,11 +26,11 @@ public class ProducerDemo {
         // we want the Key to be a String and the Value to be a String as well. We need to pass in the properties.
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
 
-        // create a producer record
+        // 3. CREATE A PRODUCER RECORD
         ProducerRecord<String, String> record =
                 new ProducerRecord<String, String>("first_topic", "hello world");
 
-        // 3. SEND DATA - asynchronous, will happen in the background
+        // 4. SEND DATA - asynchronous, will happen in the background
 
         // the send function takes a Producer record as an input
         producer.send(record);
