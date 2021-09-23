@@ -12,18 +12,16 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-// Note: Even though we set property to read from beginning if we replay this, it will not show anything.
-// That's because our consumer group has already been started and it's been reading all the way up until the end.
-// So if we wanted to restart the app to read from the beginning, we would either have to:
-// 1. Reset the group id OR
-// 2. Make the group id change
-public class ConsumerDemo {
+// Display that if we run more than one consumer with the same group id, the partitions will be rebalanced.
+// Ex: 3 Partitions and 2 consumers: 1 consumer will read from 1 partition and the other will read from 2 partitions
+// If we spin up another consumer, automatically it will reassign partitions, so each consumer will read from 1 partition.
+public class ConsumerDemoGroups {
 
     public static void main(String[] args) {
-        Logger log = LoggerFactory.getLogger(ConsumerDemo.class);
+        Logger log = LoggerFactory.getLogger(ConsumerDemoGroups.class);
 
         String bootstrapServers = "127.0.0.1:9092";
-        String groupId = "my-fourth-application";
+        String groupId = "my-fifth-application";
         String topic = "first_topic";
 
         // Create consumer configs
@@ -35,11 +33,7 @@ public class ConsumerDemo {
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        // this could be set to earliest - latest - none
-        // Earliest: read from the very beginning of your topic
-        // Latest: read from only the new messages onwards
-        // None: will throw an error if there is no offsets being saved
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); //equivalent to from beginning in CLI
 
         // create consumer
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
